@@ -1,0 +1,13 @@
+# nginx
+nginx-config
+
+# Git
+.git/
+.gitignore
+
+# Vagrant
+.vagrant/
+Vagrantfile
+
+# Other
+README.md
