@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  nginx:
+    container_name: nginx
+    image: codete/nginx
+    restart: always
+    links:
+      - php-fpm:fpm
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx-dev:/etc/nginx/sites-enabled/default
+    volumes_from:
+      - php-fpm
+    depends_on:
+      - php-fpm
+
+  php-fpm:
+    container_name: php-fpm
+    build: .
+    restart: always
+    volumes:
+      - .:/var/www
+    environment:
+      SYMFONY__ENV: dev
