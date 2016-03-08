@@ -1,0 +1,39 @@
+upstream php_fpm {
+    server fpm:9000;
+
+    keepalive 8;
+}
+
+server {
+    listen 80 default_server;
+    server_name symfony.dev;
+    root /var/www/web;
+    index index.html index.php;
+
+    location / {
+        try_files $uri /app.php$is_args$args;
+    }
+
+    location ~ ^/(app_dev|config)\.php(/|$) {
+        fastcgi_pass php_fpm;
+        fastcgi_keep_conn on;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+    }
+
+    location ~ ^/app\.php(/|$) {
+        fastcgi_pass php_fpm;
+        fastcgi_keep_conn on;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+    }
+
+    error_log /var/log/nginx/project_error.log;
+    access_log /var/log/nginx/project_access.log;
+}
