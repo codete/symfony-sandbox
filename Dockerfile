@@ -1,11 +1,6 @@
-FROM codete/php
+FROM codete/php5
 
 MAINTAINER Codete <docker@codete.com>
-
-RUN apt-get update && \
-    apt-get install -y php5-mysql && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ENV SYMFONY__ENV dev
 
@@ -13,9 +8,11 @@ COPY . /var/www
 
 WORKDIR /var/www
 
-RUN mkdir /var/tmp/symfony && \
-    rm web/app_dev.php && \
-    rm web/config.php
+RUN rm web/app_dev.php && \
+    rm web/config.php && \
+    usermod -u 1000 www-data && \
+    chown -R www-data:www-data /var/www/app/cache && \
+    chown -R www-data:www-data /var/www/app/logs
 
 VOLUME ["/var/www"]
 

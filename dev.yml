@@ -21,7 +21,17 @@ services:
     container_name: php-fpm
     build: .
     restart: always
+    links:
+      - mariadb:mariadb
     volumes:
       - .:/var/www
+    depends_on:
+      - mariadb
+
+  mariadb:
+    container_name: mariadb
+    image: codete/mariadb
+    restart: always
     environment:
-      SYMFONY__ENV: dev
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: symfony
